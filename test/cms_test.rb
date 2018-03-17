@@ -41,4 +41,13 @@ class CMSTest < Minitest::Test
     assert_includes last_response.body, "history.txt"
     assert_includes last_response.body, "changes.txt"
   end
+
+  def test_viewing_text_files
+    create_document 'history.txt', '2015 - Ruby 2.3 released.', data_path
+    get '/history.txt'
+
+    assert_equal 200, last_response.status
+    assert_equal "text/plain;charset=utf-8", last_response['Content-Type']
+    assert_includes last_response.body, '2015 - Ruby 2.3 released.'
+  end
 end

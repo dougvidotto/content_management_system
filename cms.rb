@@ -13,3 +13,13 @@ get '/' do
   @files = Dir.entries(data_path).reject { |file| File.extname(file) == '' }
   erb :index, layout: :layout
 end
+
+get '/:file' do
+  file_name = params[:file]
+  file_path = data_path + "/#{file_name}"
+  if File.exist?(file_path)
+    status 200
+    headers['Content-Type'] = 'text/plain;charset=utf-8'
+    File.read(file_path)
+  end
+end
