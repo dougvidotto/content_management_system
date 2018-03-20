@@ -1,5 +1,11 @@
 require 'sinatra'
 require 'sinatra/reloader'
+require 'tilt/erubis'
+
+configure do
+  enable :sessions
+  set :session_secret, 'secret'
+end
 
 def data_path
   if ENV['RACK_ENV'] == 'test'
@@ -21,5 +27,8 @@ get '/:file' do
     status 200
     headers['Content-Type'] = 'text/plain;charset=utf-8'
     File.read(file_path)
+  else
+    session[:message] = "#{file_name} does not exist."
+    redirect '/'
   end
 end

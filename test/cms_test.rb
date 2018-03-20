@@ -50,4 +50,16 @@ class CMSTest < Minitest::Test
     assert_equal "text/plain;charset=utf-8", last_response['Content-Type']
     assert_includes last_response.body, '2015 - Ruby 2.3 released.'
   end
+
+  def test_viewing_non_existing_files
+    create_document 'history.txt', '2015 - Ruby 2.3 released.', data_path
+    get '/changes.txt'
+    assert_equal 302, last_response.status
+
+    get last_response['Location']
+    
+    assert_equal 200, last_response.status
+    assert_equal "text/html;charset=utf-8", last_response['Content-Type']
+    assert_includes last_response.body, 'changes.txt does not exist'
+  end
 end

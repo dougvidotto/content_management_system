@@ -2,10 +2,18 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/app.css">
     <title>Content Management System</title>
   </head>
   <body>
-    <h1>Content Management System</h1>
-    <%= yield %>
+    <header>
+      <% if session[:message] %>
+        <p><%= session.delete(:message) %></p>
+      <% end %>
+    </header>
+    <main>
+      <h1>Content Management System</h1>
+      <%= yield %>
+    </main>
   </body>
 </html>
