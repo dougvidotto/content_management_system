@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'tilt/erubis'
+require 'redcarpet'
 
 configure do
   enable :sessions
@@ -15,6 +16,18 @@ def data_path
   end
 end
 
+def load_file(path)
+  content = File.read(path)
+  case File.extname(path)
+  when '.md'
+    markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
+    markdown.render(content)
+  when '.txt'
+    headers['Content-Type'] = 'text/plain;charset=utf-8'
+    content
+  end
+end
+
 get '/' do
   @files = Dir.entries(data_path).reject { |file| File.extname(file) == '' }
   erb :index, layout: :layout
@@ -25,8 +38,7 @@ get '/:file' do
   file_path = data_path + "/#{file_name}"
   if File.exist?(file_path)
     status 200
-    headers['Content-Type'] = 'text/plain;charset=utf-8'
-    File.read(file_path)
+    load_file(file_path)
   else
     session[:message] = "#{file_name} does not exist."
     redirect '/'

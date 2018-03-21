@@ -62,4 +62,14 @@ class CMSTest < Minitest::Test
     assert_equal "text/html;charset=utf-8", last_response['Content-Type']
     assert_includes last_response.body, 'changes.txt does not exist'
   end
+
+  def test_viewing_markdown_file
+    markdown_content = "# This is an example of a file that contains Markdown code!"
+    create_document "mardown_example.md", markdown_content, data_path
+
+    get '/mardown_example.md'
+
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, '<h1>This is an example of a file that contains Markdown code!</h1>'
+  end
 end
