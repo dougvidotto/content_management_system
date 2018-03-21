@@ -1,4 +1,78 @@
 body {
-  width: 960px;
-  margin: 0 auto;
+  width: 900px;
+  margin: 40px auto;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+h1 {
+  text-align: center;
+  display: inline;
+}
+
+button {
+  background-color: #008CBA; /* Blue */
+  color: white;
+  border: none;
+  padding: 5px 15px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+a:link, a:visited {
+  color: #00394d;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #e60000;
+}
+
+textarea {
+  display: block;
+  margin-bottom: 1%;
+}
+
+.login {
+  float: right;
+}
+
+.alert {
+  padding: 10px;
+  background-color: yellow;
+}
+
+.file_link {
+  width: 25%;
+}
+
+.files {
+  display: flex;
+  width: 80%;
+  margin-bottom: 15px;
+  margin-left: 10px;
+}
+
+.action {
+  width: 15%;
+  text-align: center;
+}
+
+.inline {
+  display: inline;
+}
+
+.user-status {
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+#new_documents {
+  text-align: center;
+  margin-top: 15%;
 }

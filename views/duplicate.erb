@@ -1,0 +1,9 @@
+<h2> Duplicate content of <%= params[:file] %>: </h2>
+<form class="inline" action="/<%= params[:file] %>/duplicate" method="post">
+  File Name: <input type="text" name="duplicated_file_name" value="<%= params[:file] %>">
+<textarea rows="30" cols="100" name="duplicated_file_content">
+<%= @content %>
+</textarea>
+<button type="submit">Save changes</button>
+</form>
+<a href="/"><button style="margin-left: 65%">Back to Home</button></a>

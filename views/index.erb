@@ -1,5 +1,27 @@
-<ul>
-  <% @files.each do |file| %>
-    <li><a href='/<%= file %>'><%= file %></a></li>
-  <% end %>
-</ul>
+<main id="main">
+  <ul>
+    <% @files.each do |file| %>
+      <li>
+        <div class="files">
+          <div class="file_link"><a href='/<%= file %>'><%= file %></a></div>
+          <div class="action">
+            <a href='/<%= file %>/edit'><button>Edit</button></a>
+          </div>
+          <div class="action">
+            <form class="inline action" action='/<%= file %>/delete' method='post'>
+              <button type='submit'>Delete</button>
+            </form>
+          </div>
+          <div class="action">
+            <a href='/<%= file %>/duplicate'><button>Duplicate</button></a>
+          </div>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+</main>
+
+<div id="new_documents">
+  <a href='/file/new'><button>New Document</button></a>
+  <a href='/image/new'><button>New Image</button></a>
+</div>

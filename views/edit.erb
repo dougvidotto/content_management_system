@@ -1,0 +1,25 @@
+<ul>
+  <% if @history_files[params[:file]] %>
+    <% @history_files[params[:file]].each do |hist_file| %>
+      <li>
+        <% hist_file.each do |file, author| %>
+          <a href="/<%= file %>/hist/<%= params[:file]%>/edit">
+            <%= file %>
+          </a>
+          -- Change made by <%= author %>
+        <% end %>
+      </li>
+    <% end %>
+  <% end %>
+  <li><a href="/<%= params[:file] %>/edit"><%= params[:file] %></a></li>
+</ul>
+
+<h2> Edit content of <%= params[:file] %>: </h2>
+<form class="inline" action="/<%= params[:file] %>" method="post">
+<textarea rows="30" cols="100" name="new_file_content">
+<%= @content %>
+</textarea>
+<button type="submit">Save changes</button>
+</form>
+<a href="/"><button style="margin-left: 65%">Back to Home</button></a>
+
