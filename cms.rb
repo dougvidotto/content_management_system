@@ -8,6 +8,7 @@ require 'bcrypt'
 configure do
   enable :sessions
   set :session_secret, 'secret'
+  set :erb, :escape_html => true
 end
 
 def data_path
@@ -33,6 +34,7 @@ end
 def load_file(path)
   case File.extname(path)
   when '.md'
+    headers['Content-Type'] = 'text/html;charset=utf-8'
     markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
     markdown.render(File.read(path))
   when '.txt'
