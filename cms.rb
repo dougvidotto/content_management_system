@@ -8,7 +8,7 @@ require 'bcrypt'
 configure do
   enable :sessions
   set :session_secret, 'secret'
-  set :erb, :escape_html => true
+  set :erb, escape_html: true
 end
 
 def data_path
@@ -51,7 +51,8 @@ def load_user_credentials
       File.expand_path('users.yml', __dir__)
     end
   users = YAML.load_file(credential_path)
-  users ||= {}
+  return {} unless users
+  users
 end
 
 def save_users_credentials(users)
@@ -234,7 +235,7 @@ post '/:file/delete' do
   history_files = files.select { |file, _| file == name }
 
   # Delete all associated historic files
-  history_files.each do |_, saved_files|
+  history_files.each_value do |saved_files|
     saved_files.each do |hist_files|
       File.delete(file_path(hist_files.keys.first, 'history'))
     end
