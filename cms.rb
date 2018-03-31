@@ -141,6 +141,7 @@ post '/file/new' do
   verify_user_logged
   name = params[:new_file].strip
   session[:alert] = check_file(name)
+
   if session[:alert]
     erb :new_document, layout: :layout
   else
@@ -198,19 +199,23 @@ get '/:hist_file/hist/:file/edit' do
   hist_name = params[:hist_file]
   current_name = params[:file]
   verify_user_logged
+
   if File.exist?(data_path + '/history/' + hist_name)
     @content = File.read(data_path + '/history/' + hist_name)
     files = YAML.load_file(file_path('hist.yml', 'history'))
+
     @history_files = files.select do |file, _|
       file == current_name && files[file].any? do |saved_files|
         saved_files.key?(hist_name)
       end
     end
+
     if @history_files.empty?
       session[:alert] =
         "#{current_name} does not exist or is not linked to #{hist_name}"
       redirect '/'
     end
+
     erb :edit, layout: :layout
   else
     session[:alert] = "#{hist_name} does not exist."
@@ -221,6 +226,28 @@ end
 post '/:file/delete' do
   verify_user_logged
   name = params[:file]
+
+  files = YAML.load_file(file_path('hist.yml', 'history'))
+  files ||= {}
+
+  history_files = files.select { |file, _| file == name }
+
+  # Delete all associated historic files
+  history_files.each do |_, saved_files|
+    saved_files.each do |hist_files|
+      File.delete(file_path(hist_files.keys.first, 'history'))
+    end
+  end
+
+  # Save to yaml only those that were not deleted
+  remaining = files.reject do |file, _|
+    file == name
+  end
+
+  File.open(file_path('hist.yml', 'history'), 'w+') do |file|
+    file.write(remaining.to_yaml)
+  end
+
   File.delete(file_path(name))
   session[:alert] = "#{name} was deleted."
   redirect '/'

@@ -275,23 +275,22 @@ class CMSDTest < Minitest::Test
   end
 
   def test_delete_file
-    create_document 'about.txt', data_path, ''
-    create_document 'history.txt', data_path, ''
-    create_document 'changes.txt', data_path, ''
-    create_document 'file_to_be_deleted.txt', data_path, ''
+    create_document 'hist.yml', data_path + '/history', ''
 
+    post '/file/new', { new_file: 'file_to_be_deleted.txt' }, admin_session
+    post '/file_to_be_deleted.txt', { new_file_content: 'Some content' }, admin_session
     post '/file_to_be_deleted.txt/delete', {}, admin_session
 
     assert_equal 302, last_response.status
     assert_equal 'file_to_be_deleted.txt was deleted.', session[:alert]
 
+    hist = YAML.load_file(File.expand_path(data_path + '/history/hist.yml', __FILE__))
+    assert_empty hist
+
     get last_response['Location']
 
     assert_equal 200, last_response.status
     assert_equal 'text/html;charset=utf-8', last_response['Content-Type']
-    assert_includes last_response.body, 'about.txt'
-    assert_includes last_response.body, 'history.txt'
-    assert_includes last_response.body, 'changes.txt'
     refute_includes last_response.body, "<a href='/file_to_be_deleted.txt'>file_to_be_deleted.txt</a>"
     assert_includes last_response.body, 'file_to_be_deleted.txt was deleted.'
   end
