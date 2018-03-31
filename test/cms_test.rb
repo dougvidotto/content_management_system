@@ -4,9 +4,12 @@ require 'minitest/autorun'
 require 'rack/test'
 require 'fileutils'
 require 'yaml'
-require 'pry'
-
+require 'minitest/reporters'
+require 'simplecov'
 require_relative '../cms'
+
+SimpleCov.start
+Minitest::Reporters.use!
 
 class CMSDTest < Minitest::Test
   include Rack::Test::Methods
@@ -18,6 +21,7 @@ class CMSDTest < Minitest::Test
   def setup
     FileUtils.mkdir_p(data_path)
     FileUtils.mkdir_p(data_path + '/history')
+    create_document 'hist.yml', data_path + '/history', ''
   end
 
   def teardown
@@ -93,7 +97,6 @@ class CMSDTest < Minitest::Test
 
   def test_edit_page
     create_document 'changes.txt', data_path, ''
-    create_document 'hist.yml', data_path + '/history', ''
 
     get '/changes.txt/edit', {}, admin_session
 
@@ -116,7 +119,6 @@ class CMSDTest < Minitest::Test
 
   def test_post_changes_into_file
     create_document 'about.md', data_path, '# This is ruby..'
-    create_document 'hist.yml', data_path + '/history', ''
 
     post '/about.md', { new_file_content: '# New headline' }, admin_session
 
@@ -150,7 +152,6 @@ class CMSDTest < Minitest::Test
   def test_accessing_historic_file_from_wrong_original_file
     create_document 'about.md', data_path, '# This is ruby..'
     create_document 'change.txt', data_path, 'Text example'
-    create_document 'hist.yml', data_path + '/history', ''
 
     post '/about.md', { new_file_content: '# New headline' }, admin_session
 
@@ -275,8 +276,6 @@ class CMSDTest < Minitest::Test
   end
 
   def test_delete_file
-    create_document 'hist.yml', data_path + '/history', ''
-
     post '/file/new', { new_file: 'file_to_be_deleted.txt' }, admin_session
     post '/file_to_be_deleted.txt', { new_file_content: 'Some content' }, admin_session
     post '/file_to_be_deleted.txt/delete', {}, admin_session
