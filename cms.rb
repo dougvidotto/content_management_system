@@ -50,7 +50,8 @@ def load_user_credentials
     else
       File.expand_path('users.yml', __dir__)
     end
-  YAML.load_file(credential_path)
+  users = YAML.load_file(credential_path)
+  users ||= {}
 end
 
 def save_users_credentials(users)
